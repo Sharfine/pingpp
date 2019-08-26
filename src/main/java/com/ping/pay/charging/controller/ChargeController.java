@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
 
 @RestController
@@ -23,7 +22,7 @@ public class ChargeController {
 
     @RequestMapping("/create")
     @ResponseBody
-    public CreateChargeResp createCharge(HttpServletRequest request){
+    public CreateChargeResp createCharge(){
 
         String orderId = new Date().getTime() + RandomStringUtils.random(5, true, true);
         Goods goods = Goods.builder().goodsDes("测试商品描述").goodsName("测试商品名称").goodsId(1001).build();

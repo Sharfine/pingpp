@@ -29,20 +29,12 @@
             <version>2.1.0</version>
         </dependency>
 
-        <!--
+
         <dependency>
             <groupId>Pingplusplus</groupId>
             <artifactId>pingpp-java</artifactId>
             <version>2.3.13</version>
             <type>jar</type>
-        </dependency>
-        -->
-
-        <dependency>
-            <groupId>Pingplusplus</groupId>
-            <artifactId>pingpp-java</artifactId>
-            <scope>system</scope>
-            <systemPath>${basedir}/src/main/resources/lib/pingpp-java-2.3.13.jar</systemPath>
         </dependency>
 
         <dependency>
@@ -67,6 +59,7 @@
             <artifactId>commons-lang3</artifactId>
             <version>3.9</version>
         </dependency>
+
         <dependency>
             <groupId>com.google.code.gson</groupId>
             <artifactId>gson</artifactId>
