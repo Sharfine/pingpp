@@ -1,13 +1,17 @@
 package com.ping.pay.charging.model;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * 订单
  */
 @Data
 @Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class OrderInfo {
 
     /**
