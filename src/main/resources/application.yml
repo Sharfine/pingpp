@@ -1,0 +1,46 @@
+pring:
+  port: 8080
+  profiles:
+    active: local
+  datasource:
+    url: jdbc:mysql://47.98.34.32:3306/pay?useUnicode=true&characterEncoding=utf8
+    username: root
+    password: iK!%Qh0h7fg
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    type: com.alibaba.druid.pool.DruidDataSource
+    platform: mysql
+    initialSize: 5
+    minIdle: 10
+    maxActive: 20
+    maxWait: 60000
+    timeBetweenEvictionRunsMillis: 2000
+    minEvictableIdleTimeMillis: 600000
+    maxEvictableIdleTimeMillis: 900000
+    testWhileIdle: true
+    testOnBorrow: false
+    testOnReturn: false
+    poolPreparedStatements: true
+    maxOpenPreparedStatements: 20
+    asyncInit: true
+    filters: stat,wall,log4j
+    logSlowSql: true
+
+  redis:
+    host: 47.98.34.32
+    port: 6379
+    password: 31yCOhZBHpXV2doU
+    pool:
+      max-active: 100
+      max-idle: 10
+      max-wait: 100000
+    timeout: 0
+
+mybatis:
+  mapper-locations: classpath:/mybaits/mapper/*.xml
+  config-location: classpath:/mybatis/config/mybatis-config.xml
+      
+#pingpp
+pingpp:
+  appId: app_X9ejf18anr1GrPar
+  appKey: sk_test_f9O0m1rPO4COS88iD81yzff1
+  privateKey.path: E:\\pingpp_private_key.pem

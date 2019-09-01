@@ -1,0 +1,7 @@
+pring:
+  profiles:
+    active: dev
+
+#pingpp
+pingpp:
+  privateKey.path: E:\\pingpp_private_key.pem

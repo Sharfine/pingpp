@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ping.pay.charging.dao.ChargeMapper">
+
+   <select id="getGoodsByGoodsId" resultType="com.ping.pay.charging.model.Goods">
+       select id as 'goodsId', name as 'goodsName', des as 'goodsDes', price as 'price' from goods where id = ?  and valid = 1
+   </select>
+
+    <insert id="addOrderInfo">
+       insert into order_info (id, user_id, goods_id, create_time, update_time, status) values (#{orderId}, #{userId}, #{goodsId}, now(), now(), 0)
+    </insert>
+
+</mapper>

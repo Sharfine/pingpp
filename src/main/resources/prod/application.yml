@@ -1,0 +1,7 @@
+pring:
+  profiles:
+    active: prod
+
+#pingpp
+pingpp:
+  privateKey.path: /root/pay/pingpp_private_key.pem
