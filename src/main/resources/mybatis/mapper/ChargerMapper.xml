@@ -3,7 +3,7 @@
 <mapper namespace="com.ping.pay.charging.dao.ChargeMapper">
 
    <select id="getGoodsByGoodsId" resultType="com.ping.pay.charging.model.Goods">
-       select id as 'goodsId', name as 'goodsName', des as 'goodsDes', price as 'price' from goods where id = ?  and valid = 1
+       select id as 'goodsId', name as 'goodsName', des as 'goodsDes', price as 'price' from goods where id = #{goodsId}  and valid = 1
    </select>
 
     <insert id="addOrderInfo">

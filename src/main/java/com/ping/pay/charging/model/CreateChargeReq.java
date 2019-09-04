@@ -16,4 +16,6 @@ public class CreateChargeReq {
 
     @NotEmpty
     private String payChannel;
+
+    private String channel;
 }

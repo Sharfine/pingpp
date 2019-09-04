@@ -1,4 +1,4 @@
-package com.ping.pay.charging.contrant;
+package com.ping.pay.charging.constant;
 
 public class PayContrant {
 

@@ -1,6 +1,6 @@
 package com.ping.pay.charging.controller;
 
-import com.ping.pay.charging.contrant.PayContrant;
+import com.ping.pay.charging.constant.PayContrant;
 import com.ping.pay.charging.model.CreateChargeReq;
 import com.ping.pay.charging.model.CreateChargeResp;
 import com.ping.pay.charging.model.Goods;
@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
-import java.util.Date;
 
 @RestController
 @RequestMapping("/charge")
@@ -38,7 +37,7 @@ public class ChargeController {
             throw new ServiceException("查无此商品");
         }
 
-        String orderId = new Date().getTime() + RandomStringUtils.random(5, true, true);
+        String orderId = System.currentTimeMillis() + RandomStringUtils.random(5, true, true);
         OrderInfo orderInfo = OrderInfo.builder().orderId(orderId).amount(goods.getPrice()).currency(PayContrant.CURRENCY).channel(req.getPayChannel()).goods(goods).client_ip("192.168.0.1").build();
 
         Charge charge = pingService.createCharge(orderInfo);

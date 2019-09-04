@@ -1,248 +1,215 @@
 package com.ping.pay.common.config;
 
+import com.alibaba.druid.filter.Filter;
+import com.alibaba.druid.filter.logging.Slf4jLogFilter;
 import com.alibaba.druid.pool.DruidDataSource;
-import org.springframework.boot.context.properties.ConfigurationProperties;
+import com.alibaba.druid.support.http.StatViewServlet;
+import com.alibaba.druid.support.http.WebStatFilter;
+import com.google.common.collect.Lists;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.ibatis.session.SqlSessionFactory;
+import org.mybatis.spring.SqlSessionFactoryBean;
+import org.mybatis.spring.annotation.MapperScan;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.web.servlet.FilterRegistrationBean;
+import org.springframework.boot.web.servlet.ServletRegistrationBean;
 import org.springframework.context.annotation.Bean;
-import org.springframework.stereotype.Component;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
+import org.springframework.jdbc.datasource.DataSourceTransactionManager;
+import org.springframework.transaction.PlatformTransactionManager;
 
-import javax.sql.DataSource;
+import javax.annotation.PostConstruct;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
- * 阿里数据库连接池 Druid配置
+ * @author: cyz
+ * @date: 2019/9/3 上午11:52
+ * @description: DruidDataSource
  */
-@Component
-@ConfigurationProperties(prefix = "spring.datasource")
+@Slf4j
+@Configuration
+@MapperScan("com.ping.pay.charging.dao")
 public class DruidConfiguration {
 
-    /**
-     * 数据库地址
-     */
-    private String url;
-
-    /**
-     * 用户名
-     */
-    private String userName;
-
-    /**
-     * 密码
-     */
+    @Value("${spring.datasource.url}")
+    private String dbUrl;
+    @Value("${spring.datasource.username}")
+    private String username;
+    @Value("${spring.datasource.password}")
     private String password;
-
-    /**
-     * 初始化连接数量
-     */
+    @Value("${spring.datasource.driver-class-name}")
+    private String driverClassName;
+    @Value("${spring.datasource.initialSize}")
     private int initialSize;
-
-    /**
-     * 最小闲置连接
-     */
+    @Value("${spring.datasource.minIdle}")
     private int minIdle;
-
-    /**
-     * 最大存活连接
-     */
+    @Value("${spring.datasource.maxActive}")
     private int maxActive;
-
-    /**
-     * 配置获取连接等待超时的时间
-     */
-    private long maxWait;
-
-    /**
-     * 配置间隔多久才进行一次检测，检测需要关闭的空闲连接，单位是毫秒
-     */
-    private long timeBetweenEvictionRunsMillis;
-
-    /**
-     * 配置一个连接在池中最小生存的时间，单位是毫秒
-     */
-    private long minEvictableIdleTimeMillis;
-
-    /**
-     * 配置一个连接在池中最大生存的时间，单位是毫秒
-     */
-    private long maxEvictableIdleTimeMillis;
-
-    /**
-     *
-     */
+    @Value("${spring.datasource.maxWait}")
+    private int maxWait;
+    @Value("${spring.datasource.timeBetweenEvictionRunsMillis}")
+    private int timeBetweenEvictionRunsMillis;
+    @Value("${spring.datasource.minEvictableIdleTimeMillis}")
+    private int minEvictableIdleTimeMillis;
+    @Value("${spring.datasource.validationQuery}")
+    private String validationQuery;
+    @Value("${spring.datasource.testWhileIdle}")
     private boolean testWhileIdle;
-
-    /**
-     *
-     */
+    @Value("${spring.datasource.testOnBorrow}")
     private boolean testOnBorrow;
-
-    /**
-     *
-     */
+    @Value("${spring.datasource.testOnReturn}")
     private boolean testOnReturn;
-
-    /**
-     *
-     */
+    @Value("${spring.datasource.poolPreparedStatements}")
     private boolean poolPreparedStatements;
+    @Value("${spring.datasource.maxPoolPreparedStatementPerConnectionSize}")
+    private int maxPoolPreparedStatementPerConnectionSize;
+    @Value("${spring.datasource.filters}")
+    private String filters;
+    @Value("${spring.datasource.connectionProperties}")
+    private String connectionProperties;
+    @Value("${spring.datasource.removeAbandoned}")
+    private boolean removeAbandoned;
+    @Value("${spring.datasource.removeAbandonedTimeout}")
+    private int removeAbandonedTimeout;
+    @Value("${spring.datasource.logAbandoned}")
+    private boolean logAbandoned;
+    @Value("${spring.datasource.validationQueryTimeout}")
+    private int validationQueryTimeout;
+    @Value("${spring.datasource.keepAlive}")
+    private boolean keepAlive;
 
     /**
-     *
+     * 若连接池配置了maxWait,在连接不够用的时候,会进入竞争的状态,unfair模式会存在不公平的现象,
+     * 个别线程可能过了超时时间还获取不到连接,但是这种方式的并发性能比较好;若没配置unfair,
+     * 那么druid默认是fair模式,这种模式是公平的,但是并发性能比较差.因此为了提高并发性能,设置锁为非公平的.
      */
-    private int maxOpenPreparedStatements;
+    @Value("${spring.datasource.useUnfairLock:true}")
+    private boolean useUnfairLock;
+
+    @PostConstruct
+    private void init() {
+        log.info("data source init....");
+    }
+
+    @Bean
+    @Primary
+    public DruidDataSource dataSource() {
+
+        log.info("data source init....");
+
+        DruidDataSource datasource = new DruidDataSource();
+        datasource.setUrl(this.dbUrl);
+        datasource.setUsername(username);
+        datasource.setPassword(password);
+        datasource.setDriverClassName(driverClassName);
+
+        //configuration
+        datasource.setInitialSize(initialSize);
+        datasource.setMinIdle(minIdle);
+        datasource.setMaxActive(maxActive);
+        datasource.setMaxWait(maxWait);
+        datasource.setTimeBetweenEvictionRunsMillis(timeBetweenEvictionRunsMillis);
+        datasource.setMinEvictableIdleTimeMillis(minEvictableIdleTimeMillis);
+        datasource.setValidationQuery(validationQuery);
+        datasource.setTestWhileIdle(testWhileIdle);
+        datasource.setTestOnBorrow(testOnBorrow);
+        datasource.setTestOnReturn(testOnReturn);
+        datasource.setPoolPreparedStatements(poolPreparedStatements);
+        datasource.setMaxPoolPreparedStatementPerConnectionSize(maxPoolPreparedStatementPerConnectionSize);
+        try {
+            datasource.setFilters(filters);
+        } catch (SQLException e) {
+            log.error("druid configuration initialization filter: {}", e.getMessage(), e);
+        }
+        datasource.setConnectionProperties(connectionProperties);
+        datasource.setUseUnfairLock(useUnfairLock);
+
+        datasource.setRemoveAbandoned(removeAbandoned);
+        datasource.setRemoveAbandonedTimeout(removeAbandonedTimeout);
+        datasource.setLogAbandoned(logAbandoned);
+        datasource.setValidationQueryTimeout(validationQueryTimeout);
+        datasource.setKeepAlive(keepAlive);
+
+        //-----------------------druid日志处理过滤器-------------------
+        List<Filter> list = new ArrayList<>();
+        list.add(logFilter());
+        datasource.setProxyFilters(list);
+
+        try {
+            datasource.init();
+        } catch (SQLException e) {
+            log.error("datasource init failed", e);
+        }
+
+        return datasource;
+
+    }
 
     /**
-     *
+     * 提供SqlSeesion
+     * @return
+     * @throws Exception
      */
-    private boolean asyncInit;
+    @Bean
+    public SqlSessionFactory sqlSessionFactoryBean() throws Exception {
+        SqlSessionFactoryBean sqlSessionFactoryBean = new SqlSessionFactoryBean();
+        sqlSessionFactoryBean.setDataSource(dataSource());
+        PathMatchingResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
+        List<Resource> mapperResourceList = new ArrayList<>();
+        mapperResourceList.addAll(Lists.newArrayList(resolver.getResources("classpath*:mybatis/mapper/*Mapper.xml")));
+        mapperResourceList.addAll(Lists.newArrayList(resolver.getResources("classpath*:mybatis/mapper/*Dao.xml")));
+        sqlSessionFactoryBean.setMapperLocations(mapperResourceList.toArray(new Resource[]{}));
+        sqlSessionFactoryBean.setConfigLocation(resolver.getResource("classpath:mybatis/config/mybatis-config.xml"));
 
-
-    @Bean(destroyMethod = "close", initMethod = "init")
-    public DataSource druidDataSource() throws SQLException {
-        DruidDataSource druidDataSource = new DruidDataSource();
-        druidDataSource.setUrl(url);
-        druidDataSource.setUsername(userName);
-        druidDataSource.setPassword(password);
-        druidDataSource.setMaxActive(maxActive);
-        druidDataSource.setInitialSize(initialSize);
-        druidDataSource.setMaxWait(maxWait);
-        druidDataSource.setMinIdle(minIdle);
-        druidDataSource.setTimeBetweenEvictionRunsMillis(timeBetweenEvictionRunsMillis);
-        druidDataSource.setMinEvictableIdleTimeMillis(minEvictableIdleTimeMillis);
-        druidDataSource.setMaxEvictableIdleTimeMillis(maxEvictableIdleTimeMillis);
-        druidDataSource.setTestWhileIdle(testWhileIdle);
-        druidDataSource.setTestOnBorrow(testOnBorrow);
-        druidDataSource.setTestOnReturn(testOnReturn);
-        druidDataSource.setPoolPreparedStatements(poolPreparedStatements);
-        druidDataSource.setMaxOpenPreparedStatements(maxOpenPreparedStatements);
-        druidDataSource.setAsyncInit(asyncInit);
-        return druidDataSource;
+        return sqlSessionFactoryBean.getObject();
     }
 
-    public String getUrl() {
-        return url;
+    @Bean
+    public PlatformTransactionManager transactionManager() {
+        return new DataSourceTransactionManager(dataSource());
     }
 
-    public void setUrl(String url) {
-        this.url = url;
+    /**
+     * druid监控
+     * @return
+     */
+    @Bean
+    public ServletRegistrationBean druidServlet() {
+        ServletRegistrationBean servletRegistrationBean = new ServletRegistrationBean(new StatViewServlet(), "/druid/*");
+        //白名单：
+        //IP黑名单 (存在共同时，deny优先于allow) : 如果满足deny的话提示:Sorry, you are not permitted to view this page.
+        //登录查看信息的账号密码.
+        servletRegistrationBean.addInitParameter("loginUsername","admin");
+        servletRegistrationBean.addInitParameter("loginPassword","admin123456");
+        //是否能够重置数据.
+        return servletRegistrationBean;
     }
 
-    public String getUserName() {
-        return userName;
+    @Bean
+    public FilterRegistrationBean filterRegistrationBean() {
+        FilterRegistrationBean filterRegistrationBean = new FilterRegistrationBean();
+        filterRegistrationBean.setFilter(new WebStatFilter());
+        filterRegistrationBean.addUrlPatterns("/*");
+        filterRegistrationBean.addInitParameter("exclusions", "*.js,*.gif,*.jpg,*.png,*.css,*.ico,/druid/*");
+        return filterRegistrationBean;
     }
 
-    public void setUserName(String userName) {
-        this.userName = userName;
+    @Bean
+    public Slf4jLogFilter logFilter(){
+        Slf4jLogFilter filter = new Slf4jLogFilter();
+        filter.setResultSetLogEnabled(false);
+        filter.setConnectionLogEnabled(false);
+        filter.setStatementParameterClearLogEnable(false);
+        filter.setStatementCreateAfterLogEnabled(false);
+        filter.setStatementCloseAfterLogEnabled(false);
+        filter.setStatementParameterSetLogEnabled(false);
+        filter.setStatementPrepareAfterLogEnabled(false);
+        return filter;
     }
 
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public int getInitialSize() {
-        return initialSize;
-    }
-
-    public void setInitialSize(int initialSize) {
-        this.initialSize = initialSize;
-    }
-
-    public int getMinIdle() {
-        return minIdle;
-    }
-
-    public void setMinIdle(int minIdle) {
-        this.minIdle = minIdle;
-    }
-
-    public int getMaxActive() {
-        return maxActive;
-    }
-
-    public void setMaxActive(int maxActive) {
-        this.maxActive = maxActive;
-    }
-
-    public long getMaxWait() {
-        return maxWait;
-    }
-
-    public void setMaxWait(long maxWait) {
-        this.maxWait = maxWait;
-    }
-
-    public long getTimeBetweenEvictionRunsMillis() {
-        return timeBetweenEvictionRunsMillis;
-    }
-
-    public void setTimeBetweenEvictionRunsMillis(long timeBetweenEvictionRunsMillis) {
-        this.timeBetweenEvictionRunsMillis = timeBetweenEvictionRunsMillis;
-    }
-
-    public long getMinEvictableIdleTimeMillis() {
-        return minEvictableIdleTimeMillis;
-    }
-
-    public void setMinEvictableIdleTimeMillis(long minEvictableIdleTimeMillis) {
-        this.minEvictableIdleTimeMillis = minEvictableIdleTimeMillis;
-    }
-
-    public long getMaxEvictableIdleTimeMillis() {
-        return maxEvictableIdleTimeMillis;
-    }
-
-    public void setMaxEvictableIdleTimeMillis(long maxEvictableIdleTimeMillis) {
-        this.maxEvictableIdleTimeMillis = maxEvictableIdleTimeMillis;
-    }
-
-    public boolean isTestWhileIdle() {
-        return testWhileIdle;
-    }
-
-    public void setTestWhileIdle(boolean testWhileIdle) {
-        this.testWhileIdle = testWhileIdle;
-    }
-
-    public boolean isTestOnBorrow() {
-        return testOnBorrow;
-    }
-
-    public void setTestOnBorrow(boolean testOnBorrow) {
-        this.testOnBorrow = testOnBorrow;
-    }
-
-    public boolean isTestOnReturn() {
-        return testOnReturn;
-    }
-
-    public void setTestOnReturn(boolean testOnReturn) {
-        this.testOnReturn = testOnReturn;
-    }
-
-    public boolean isPoolPreparedStatements() {
-        return poolPreparedStatements;
-    }
-
-    public void setPoolPreparedStatements(boolean poolPreparedStatements) {
-        this.poolPreparedStatements = poolPreparedStatements;
-    }
-
-    public int getMaxOpenPreparedStatements() {
-        return maxOpenPreparedStatements;
-    }
-
-    public void setMaxOpenPreparedStatements(int maxOpenPreparedStatements) {
-        this.maxOpenPreparedStatements = maxOpenPreparedStatements;
-    }
-
-    public boolean isAsyncInit() {
-        return asyncInit;
-    }
-
-    public void setAsyncInit(boolean asyncInit) {
-        this.asyncInit = asyncInit;
-    }
 }
