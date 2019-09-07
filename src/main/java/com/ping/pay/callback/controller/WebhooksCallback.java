@@ -6,7 +6,6 @@ import com.ping.pay.callback.model.CallbackInfo;
 import com.ping.pay.charging.service.IChargeService;
 import com.ping.pay.common.enums.ResultEnums;
 import com.ping.pay.common.model.ResponseResult;
-import com.pingplusplus.model.Charge;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;

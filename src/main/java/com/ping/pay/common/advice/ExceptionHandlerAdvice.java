@@ -24,7 +24,7 @@ public class ExceptionHandlerAdvice {
     @ExceptionHandler(Exception.class)
     public ResponseResult handleException(Exception e){
         log.error(e.getMessage(),e);
-        return new ResponseResult(ResultEnums.SYSTEM_ERROR.getCode(),  "error");
+        return new ResponseResult(ResultEnums.SYSTEM_ERROR.getCode(), ResultEnums.SYSTEM_ERROR.getMsg());
     }
 
     /**
@@ -35,7 +35,7 @@ public class ExceptionHandlerAdvice {
     @ExceptionHandler(RuntimeException.class)
     public ResponseResult handleRuntimeException(RuntimeException e){
         log.error(e.getMessage(),e);
-        return new ResponseResult(ResultEnums.ERROR.getCode(),  "error");
+        return new ResponseResult(ResultEnums.ERROR.getCode(), ResultEnums.ERROR.getMsg());
     }
 
     /**
@@ -46,6 +46,6 @@ public class ExceptionHandlerAdvice {
     @ExceptionHandler(ServiceException.class)
     public ResponseResult handleBaseException(ServiceException e){
         log.error(e.getMessage(),e);
-        return new ResponseResult(ResultEnums.ERROR.getCode(),  "error");
+        return new ResponseResult(ResultEnums.ERROR.getCode(), e.getMessage());
     }
 }
