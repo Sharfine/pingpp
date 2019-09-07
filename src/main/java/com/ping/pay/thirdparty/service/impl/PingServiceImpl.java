@@ -1,11 +1,10 @@
 package com.ping.pay.thirdparty.service.impl;
 
 
-import com.ping.pay.charging.model.OrderInfo;
+import com.ping.pay.charging.model.UserOrder;
 import com.ping.pay.thirdparty.service.PingService;
 import com.pingplusplus.exception.*;
 import com.pingplusplus.model.Charge;
-import lombok.extern.log4j.Log4j;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -25,27 +24,27 @@ public class PingServiceImpl implements PingService {
 
     /**
      * 对接Ping++ 创建订单
-     * @param orderInfo {@link OrderInfo}
+     * @param userOrder {@link UserOrder}
      * @return {@link Charge}
      */
     @Override
-    public Charge createCharge(OrderInfo orderInfo) {
+    public Charge createCharge(UserOrder userOrder) {
 
         Charge charge = null;
         Map<String, Object> chargeMap = new HashMap<String, Object>();
-        chargeMap.put("amount", orderInfo.getAmount());//订单总金额, 人民币单位：分（如订单总金额为 1 元，此处请填 100）
-        chargeMap.put("currency", orderInfo.getCurrency());
-        chargeMap.put("subject", orderInfo.getGoods().getGoodsName());
-        chargeMap.put("body",  orderInfo.getGoods().getGoodsDes());
-        chargeMap.put("order_no", orderInfo.getOrderId());// 推荐使用 8-20 位，要求数字或字母，不允许其他字符
-        chargeMap.put("channel", orderInfo.getChannel());// 支付使用的第三方支付渠道取值，请参考：https://www.pingxx.com/api#api-c-new
-        chargeMap.put("client_ip", orderInfo.getClient_ip()); // 发起支付请求客户端的 IP 地址，格式为 IPV4，如: 127.0.0.1
+        chargeMap.put("amount", userOrder.getAmount());//订单总金额, 人民币单位：分（如订单总金额为 1 元，此处请填 100）
+        chargeMap.put("currency", userOrder.getCurrency());
+        chargeMap.put("subject", userOrder.getGoods().getGoodsName());
+        chargeMap.put("body",  userOrder.getGoods().getGoodsDes());
+        chargeMap.put("order_no", userOrder.getOrderId());// 推荐使用 8-20 位，要求数字或字母，不允许其他字符
+        chargeMap.put("channel", userOrder.getChannel());// 支付使用的第三方支付渠道取值，请参考：https://www.pingxx.com/api#api-c-new
+        chargeMap.put("client_ip", userOrder.getClient_ip()); // 发起支付请求客户端的 IP 地址，格式为 IPV4，如: 127.0.0.1
         Map<String, String> app = new HashMap<String, String>();
         app.put("id", appId);
         chargeMap.put("app", app);
 
         // extra 取值请查看相应方法说明
-        chargeMap.put("extra", channelExtra(orderInfo.getClient_ip()));
+        chargeMap.put("extra", channelExtra(userOrder.getClient_ip()));
 
         try {
             //发起交易请求

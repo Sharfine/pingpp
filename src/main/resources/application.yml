@@ -1,7 +1,9 @@
-spring:
+server:
   port: 8080
+
+spring:
   profiles:
-    active: local
+    active: @profiles.active@
   datasource:
     url: jdbc:mysql://47.98.34.32:3306/pay?useUnicode=true&characterEncoding=utf8&useSSL=false
     username: root
@@ -43,12 +45,10 @@ spring:
     host: 47.98.34.32
     port: 6379
     password: 31yCOhZBHpXV2doU
-    timeout: 0
     jedis:
       pool:
         maxActive: 100
         maxIdle: 10
-        maxWait: 100000
 
 
 mybatis:
@@ -59,4 +59,4 @@ mybatis:
 pingpp:
   appId: app_X9ejf18anr1GrPar
   appKey: sk_test_f9O0m1rPO4COS88iD81yzff1
-  privateKey.path: E:\\pingpp_private_key.pem
+  privateKey.path: /Users/chenyaozong 1/migu/projects/pingpp/src/main/resources/pingpp_private_key.pem

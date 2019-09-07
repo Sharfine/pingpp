@@ -1,5 +1,6 @@
 package com.ping.pay.callback.model;
 
+import com.pingplusplus.model.Charge;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -7,7 +8,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class CallbackInfo {
+public class CallbackInfo<T> {
 
     /**
      * 事件对象 id ，由 Ping++ 生成，28 位长度字符串。
@@ -44,6 +45,8 @@ public class CallbackInfo {
      */
     private String request;
 
-    private String data;
+
+    private CallbackData<T> data;
+
 
 }

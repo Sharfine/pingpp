@@ -1,10 +1,7 @@
 package com.ping.pay.charging.controller;
 
 import com.ping.pay.charging.constant.PayContrant;
-import com.ping.pay.charging.model.CreateChargeReq;
-import com.ping.pay.charging.model.CreateChargeResp;
-import com.ping.pay.charging.model.Goods;
-import com.ping.pay.charging.model.OrderInfo;
+import com.ping.pay.charging.model.*;
 import com.ping.pay.charging.service.IChargeService;
 import com.ping.pay.common.exception.ServiceException;
 import com.ping.pay.thirdparty.service.PingService;
@@ -17,6 +14,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
+import java.util.Objects;
 
 @RestController
 @RequestMapping("/charge")
@@ -38,17 +36,36 @@ public class ChargeController {
         }
 
         String orderId = System.currentTimeMillis() + RandomStringUtils.random(5, true, true);
-        OrderInfo orderInfo = OrderInfo.builder().orderId(orderId).amount(goods.getPrice()).currency(PayContrant.CURRENCY).channel(req.getPayChannel()).goods(goods).client_ip("192.168.0.1").build();
+        UserOrder userOrder = UserOrder.builder().orderId(orderId).amount(goods.getPrice()).currency(PayContrant.CURRENCY).channel(req.getPayChannel()).goods(goods).client_ip("192.168.0.1").build();
+        OrderInfo orderInfo = OrderInfo.builder().orderId(orderId).goodsId(goods.getGoodsId()).appChannel(req.getPayChannel()).status(0).userId(req.getUserId()).build();
 
-        Charge charge = pingService.createCharge(orderInfo);
+        Charge charge = pingService.createCharge(userOrder);
         if(charge == null){
             throw new ServiceException("创建订单失败,请稍后重试");
         }
 
         CreateChargeResp createChargeResp = CreateChargeResp.builder().charge(charge).build();
         //创建成功，插入自己的表
-        chargeService.addOrderInfo(req.getUserId(), orderInfo);
+        chargeService.addOrderInfo(orderInfo);
 
         return createChargeResp;
     }
+
+    @RequestMapping("/query")
+    @ResponseBody
+    public QueryChargeResp queryCharge(@Valid @RequestBody QueryChargeReq req){
+
+        QueryChargeResp queryChargeResp = new QueryChargeResp();
+        String userId = req.getUserId();
+        String orderId = req.getOrderId();
+
+        OrderInfo orderInfo = chargeService.queryOrderInfo(orderId);
+        if(orderInfo == null || !Objects.equals(orderInfo.getUserId(), userId)){
+            throw new ServiceException("查无此订单");
+        }
+
+        queryChargeResp.setOrderInfo(orderInfo);
+        return queryChargeResp;
+    }
+
 }

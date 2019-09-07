@@ -7,5 +7,9 @@ public interface IChargeService {
 
     Goods getGoodsByGoodsId(Integer goodsId);
 
-    void addOrderInfo(String userId, OrderInfo orderInfo);
+    void addOrderInfo(OrderInfo orderInfo);
+
+    OrderInfo queryOrderInfo(String orderId);
+
+    void updateOrderStatus(String orderId, Integer status);
 }

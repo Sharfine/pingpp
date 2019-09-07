@@ -1,6 +1,7 @@
 package com.ping.pay.thirdparty.service;
 
 import com.ping.pay.charging.model.OrderInfo;
+import com.ping.pay.charging.model.UserOrder;
 import com.pingplusplus.model.Charge;
 
 /**
@@ -10,8 +11,8 @@ public interface PingService {
 
     /**
      * 对接Ping++ 创建订单
-     * @param orderInfo {@link OrderInfo}
+     * @param userOrder {@link UserOrder}
      * @return {@link Charge}
      */
-    Charge createCharge(OrderInfo orderInfo);
+    Charge createCharge(UserOrder userOrder);
 }

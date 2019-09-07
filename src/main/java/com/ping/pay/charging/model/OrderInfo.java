@@ -22,27 +22,20 @@ public class OrderInfo {
     /**
      * 商品
      */
-    private Goods goods;
+    private Integer goodsId;
 
     /**
-     * 3 位 ISO 货币代码，小写字母，人民币为 cny。使用跨境渠道参考 跨境渠道 currency 说明 ；使用 isv_lite 渠道只支持 cny,hkd 其中的一个值。
+     * 用户id
      */
-    private String currency;
+    private String userId;
 
     /**
-     * 订单总金额（必须大于 0），单位为对应币种的最小货币单位，人民币为分。如订单总金额为 1 元，amount 为 100。
+     * app渠道
      */
-    private Integer amount;
-
-
-    /**
-     * 支付使用的第三方支付渠道。参考 支付渠道属性值。
-     * 见：https://www.pingxx.com/api/%E6%94%AF%E4%BB%98%E6%B8%A0%E9%81%93%E5%B1%9E%E6%80%A7%E5%80%BC
-     */
-    private String channel;
+    private String appChannel;
 
     /**
-     * 发起支付请求客户端的 IP 地址，支持 IPv4、IPv6 格式。
+     * 状态
      */
-    private String client_ip;
+    private Integer status;
 }
