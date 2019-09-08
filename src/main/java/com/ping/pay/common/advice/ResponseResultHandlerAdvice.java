@@ -27,7 +27,7 @@ public class ResponseResultHandlerAdvice implements ResponseBodyAdvice {
                 return body;
             }else{
                 // 只有正常返回的结果才会进入这个判断流程，所以返回正常成功的状态码
-                ResponseResult responseResult = new ResponseResult(ResultEnums.SUCCESS.getCode(), "success", body);
+                ResponseResult responseResult = new ResponseResult(ResultEnums.SUCCESS.getCode(), ResultEnums.SUCCESS.getMsg(), body);
                 return responseResult;
             }
         }

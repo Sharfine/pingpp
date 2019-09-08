@@ -25,6 +25,5 @@ public class PingppConfigInit implements InitializingBean {
         Pingpp.appId = appId;
         Pingpp.apiKey = appKey;
         Pingpp.privateKeyPath = privateKeyPath;
-        //Pingpp.privateKeyPath = "E:\\private_key.pem";
     }
 }
