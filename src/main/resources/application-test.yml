@@ -1,5 +1,5 @@
 log:
-  home: D:\\IdeaProjects\\pay
+  home: /Users/chenyaozong 1/migu/projects/pingpp
 #pingpp
 pingpp:
-  privateKey.path: E:\\pingpp_private_key.pem
+  privateKey.path: /Users/chenyaozong 1/migu/projects/pingpp/src/main/resources/pingpp_private_key.pem
