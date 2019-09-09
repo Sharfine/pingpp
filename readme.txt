@@ -1,4 +1,4 @@
-nohup java -jar xxx.jar &  启动守护进程的jar
+java -jar pay-0.0.1-SNAPSHOT.jar --spring.profiles.active=prod &
 
 netstat -tunlp|grep 端口号  //查询进程号
 ps aux|grep redis
