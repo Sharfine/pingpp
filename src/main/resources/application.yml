@@ -57,6 +57,6 @@ mybatis:
       
 #pingpp
 pingpp:
-  appId: app_X9ejf18anr1GrPar
-  appKey: sk_test_f9O0m1rPO4COS88iD81yzff1
+  appId: app_1afL4SKG0mfDPKav
+  appKey: sk_test_nvnnH8GmvfrLbHyvXDC8q54O
   privateKey.path: /Users/chenyaozong 1/migu/projects/pingpp/src/main/resources/pingpp_private_key.pem
