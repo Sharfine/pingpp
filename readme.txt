@@ -5,7 +5,9 @@ ps aux|grep redis
 
 kill -9 进程号  杀进程
 
-mysql 账号密码root  iK!%Qh0h7fg!
+mysql  启动service mysqld start
+       关闭service mysqld stop
+       账号密码root  iK!%Qh0h7fg!
 
 reids 安装路径/usr/local/redis/redis-4.0.9
       启动：./src/redis-server redis.conf
