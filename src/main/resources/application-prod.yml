@@ -6,8 +6,8 @@ spring:
     host: 47.98.34.32
     #host: 172.16.109.74
 log:
-  home: /root/pay/log
+  home: /root/daily/log
 
 #pingpp
 pingpp:
-  privateKey.path: /root/pay/pingpp_private_key.pem
+  privateKey.path: /root/daily/pingpp_private_key.pem

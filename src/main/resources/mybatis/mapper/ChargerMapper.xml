@@ -1,21 +1,36 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.ping.pay.charging.dao.ChargeMapper">
+<mapper namespace="com.fun.daily.charging.dao.ChargeMapper">
 
-   <select id="getGoodsByGoodsId" resultType="com.ping.pay.charging.model.Goods">
-       select id as 'goodsId', name as 'goodsName', des as 'goodsDes', price as 'price' from goods where id = #{goodsId}  and valid = 1
+   <select id="getGoodsByGoodsId" resultType="com.fun.daily.charging.model.Goods">
+       select id as 'goodsId',
+              name as 'goodsName',
+              des as 'goodsDes',
+              price as 'price'
+              from goods
+              where id = #{goodsId}
+              and valid = 1
    </select>
 
     <insert id="addOrderInfo">
-       insert into order_info (id, user_id, app_channel, goods_id, create_time, update_time, status) values (#{orderId}, #{userId}, #{appChannel}, #{goodsId}, now(), now(), 0)
+       insert into order_info (id, user_id, app_channel, goods_id, create_time, update_time, status)
+       values (#{orderId}, #{userId}, #{appChannel}, #{goodsId}, now(), now(), 0)
     </insert>
 
-    <select id="queryOrderInfo" resultType="com.ping.pay.charging.model.OrderInfo">
-       select id as 'orderId', user_id as 'userId', app_channel as "appChannel", goods_Id as 'goodsId', status as 'status' from order_info where id = #{orderId}
+    <select id="queryOrderInfo" resultType="com.fun.daily.charging.model.OrderInfo">
+       select id as 'orderId',
+              user_id as 'userId',
+              app_channel as "appChannel",
+              goods_Id as 'goodsId',
+              status as 'status'
+              from order_info
+              where id = #{orderId}
    </select>
 
     <update id="updateOrderStatus">
-        update order_info set status = #{status} where id = #{orderId}
+        update order_info
+              set status = #{status}
+        where id = #{orderId}
     </update>
 
 </mapper>
